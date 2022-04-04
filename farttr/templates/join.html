@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if form.errors %}
+    <ul>
+      {% for error in form.errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <form class="grid w-full grid-cols-2 mx-auto md:max-w-md gap-x-2 gap-y-1" method="POST">
+    {% for field in form %}
+      {% if field.name == "csrf_token" %}
+        {{ field }}
+      {% else %}
+        <div class="text-right whitespace-nowrap">
+          {% if field.flags.required %}
+            <span class="text-red-500">*</span>
+          {% endif %}{{ field.label }}
+        </div>
+        {% if field.type == "BooleanField" %}
+          {{ field(class_="inline-block h-6 w-min") }}
+        {% else %}
+          {{ field(class_="inline-block w-full h-6 border border-solid border-black") }}
+        {% endif %}
+        <div class="col-start-2">
+          {{ field.description }}
+        </div>
+      {% endif %}
+    {% endfor %}
+    <button class="col-span-2">Join</button>
+  </form>
+{% endblock %}

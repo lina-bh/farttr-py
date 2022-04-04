@@ -1,0 +1,52 @@
+@charset "utf-8";
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+label[for="csrf_token"] {
+  display: none;
+}
+
+/*
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+header a,
+header a:visited,
+header a:link {
+  color: #00e;
+}
+
+body > header form {
+  display: inline-block;
+}
+
+.entry-form > label,
+.entry-form > button {
+  display: block;
+}
+
+.entry-form > input[type="text"],
+.entry-form > input[type="password"],
+.entry-form > input[type="email"],
+.entry-form > button {
+  width: 200px;
+}
+
+.entry-form > button:last-of-type {
+  margin-top: 1rem;
+}
+
+.form-note {
+  font-size: small;
+  color: #333;
+}
+
+.page-error {
+  color: red;
+}
+*/ ;

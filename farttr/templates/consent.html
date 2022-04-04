@@ -1,0 +1,98 @@
+{% macro necessary() %}
+  this website uses data stored on your device, associated with you and your device, and sent back to remote servers for these purposes:
+  <details>
+    <summary class="pl-1 underline hover:cursor-pointer">
+      <strong>necessary</strong>
+      purposes for the proper functioning of the website:
+    </summary>
+    <div class="absolute left-0 z-10 p-1 mx-2 text-black bg-white rounded shadow-md shadow-black">
+      <ul class="list-disc list-inside">
+        <li>allowing you to stay logged in</li>
+        <li>recording your consent to store and process data that's about you</li>
+      </ul>
+    </div>
+  </details>
+  if you do not consent to data being stored on your computer for necessary purposes, you must stop using this website.
+  <a href="/privacy" class="underline">More information</a>
+{% endmacro %}
+
+{% macro consent_type_input(name, desc) -%}
+  <div>
+    <input id="consent__form__{{name}}" name="{{name}}" type="checkbox" class="scale-125"/>
+    <label for="consent__form__{{name}}" class="pl-1">{{desc}}</label>
+  </div>
+{%- endmacro %}
+{% macro consent_button_classes() -%}
+  inline-block px-3 py-2 text-black bg-yellow-300 border rounded focus:border-solid focus:border-blue-200
+{%- endmacro %}
+
+<noscript>
+  {{ necessary() }}
+</noscript>
+{% if "Lynx" not in request.headers["User-Agent"] %}
+  <script type="module">
+    import Cookies from "/static/node_modules/js-cookie/dist/js.cookie.min.mjs"
+
+    const consentBlock = document.getElementById("consent")
+    if (consentBlock && !Cookies.get("consent")) {
+      consentBlock.style.display = "block"
+    }
+
+    const consentForm = document.getElementById("consent__form")
+    if (consentForm) {
+      const onSubmit = (ev) => {
+        ev.preventDefault()
+        const rejected = ev
+          .submitter
+          .id
+          .includes("reject")
+        let consent = ""
+        for (const el of ev.target.elements) {
+          if (el.type === "checkbox") {
+            consent += el.name + "=" + (
+            el.checked && !rejected).toString() + "&"
+          }
+        }
+        if (consent.endsWith("&")) {
+          consent = consent.slice(0, -1)
+        }
+        Cookies.set("consent", consent, {
+          expires: 365,
+          sameSite: "Lax"
+        })
+        consentBlock.style.display = "none"
+      }
+      for (const el of consentForm.elements) {
+        if (el.type === "checkbox") {
+          delete el.checked
+        }
+      }
+
+      consentForm.addEventListener("submit", onSubmit, false)
+    }
+  </script>
+
+  <div id="consent" style="display: none" class="fixed bottom-0 left-0 w-full p-2 text-white bg-blue-800">
+    {{ necessary() }}<br/>
+    optionally, you can choose whether you will allow data for the following purposes to be stored and sent back to our servers or our partners':
+    <form id="consent__form" class="block">
+      {{ consent_type_input("preferences", "recording any of your preferences not
+    strictly necessary to use the site") }}
+      {{ consent_type_input("analytics",
+    "allowing us to measure usage of the website") }}
+      {{
+    consent_type_input("adtracking", "tracking by advertising companies to sell
+    things to you") }}
+      {{ consent_type_input("social", "integration with social
+    media websites") }}
+      <div class="flex flex-row items-end justify-center gap-2">
+        <button type="submit" class="{{ consent_button_classes() }}">
+          Accept
+        </button>
+        <button id="consent__form__reject" type="submit" class="{{ consent_button_classes() }}">
+          Reject
+        </button>
+      </div>
+    </form>
+  </div>
+{% endif %}

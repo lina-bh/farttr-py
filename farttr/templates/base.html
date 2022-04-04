@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>
+      {% block title %}farttr{% endblock %}
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"/>
+    {% block head %}{% endblock %}
+  </head>
+
+  <body class="px-8 py-4">
+    <a class="fixed top-0 left-0 block -translate-y-full focus:translate-y-0" href="#content">Skip to main content</a>
+    {% include "consent.html" %}
+    <header class="flex flex-wrap items-center justify-center pb-1 text-lg gap-x-8">
+      <h1 class="flex-grow text-3xl">
+        <a href="/">💩 farttr</a>
+      </h1>
+      <hr class="invisible w-full md:hidden"/>
+      {% if current_user.is_authenticated %}
+        hello
+        {{ current_user.name }}
+        <form action="/logout" method="post">
+          <button>log out</button>
+        </form>
+      {% else %}
+        <a href="/join">join</a>
+        <a href="/login">login</a>
+      {% endif %}
+    </header>
+    <main id="content">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+
+</html>
